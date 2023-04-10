@@ -30,7 +30,7 @@ from vnpy.trader.ui import MainWindow, create_qapp
 from vnpy_okex import OkexGateway
 from vnpy_binance import (BinanceSpotGateway, BinanceUsdtGateway, BinanceInverseGateway)  # noqa
 
-# from vnpy_ctastrategy import CtaStrategyApp
+from vnpy_ctastrategy import CtaStrategyApp
 # from vnpy_ctabacktester import CtaBacktesterApp
 # from vnpy_spreadtrading import SpreadTradingApp
 # from vnpy_algotrading import AlgoTradingApp
@@ -84,7 +84,7 @@ def main():
     main_engine.add_gateway(BinanceInverseGateway)
 
     # main_engine.add_app(PaperAccountApp)
-    # main_engine.add_app(CtaStrategyApp)
+    main_engine.add_app(CtaStrategyApp)
     # main_engine.add_app(CtaBacktesterApp)
     # main_engine.add_app(SpreadTradingApp)
     # main_engine.add_app(AlgoTradingApp)

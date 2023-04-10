@@ -881,6 +881,17 @@ pytz = ">=2020.1"
 test = ["hypothesis (>=5.5.3)", "pytest (>=6.0)", "pytest-xdist (>=1.31)"]
 
 [[package]]
+name = "peewee"
+version = "3.16.0"
+description = "a little orm"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "peewee-3.16.0.tar.gz", hash = "sha256:1800c0a04962ee99d161c07f5a12fc49549caf5cfcda426a9103e34e37f854ba"},
+]
+
+[[package]]
 name = "pillow"
 version = "9.5.0"
 description = "Python Imaging Library (Fork)"
@@ -1607,4 +1618,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "4eef84ba80ee6cbb46e785415ae5dafc43c5cdf59e38b1ddeff5c6f2480cb07f"
+content-hash = "9703b03cbc0e6be9ada89004736f3c3f225faf064e16e927433cb5dcae71b0b0"
