@@ -1,0 +1,8 @@
+{
+	"python.formatting.provider": "autopep8",
+	"python.linting.flake8Enabled": true,
+	"python.linting.flake8Args": [
+		"--exclude=venv,build,__pycache__,__init__.py,ib,talib,uic",
+		"--ignore=E501,W503"
+	]
+}
