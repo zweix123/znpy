@@ -7,7 +7,7 @@ from threading import Thread
 from asyncio import (
     get_running_loop,
     new_event_loop,
-    set_event_loop,
+    # set_event_loop,
     set_event_loop,
     run_coroutine_threadsafe,
     AbstractEventLoop
@@ -66,10 +66,7 @@ class WebsocketClient:
     def start(self):
         """
         启动客户端
-
-        连接成功后会自动调用on_connected回调函数，
-
-        请等待on_connected被调用后，再发送数据包。
+        连接成功后会自动调用on_connected回调函数, 请等待on_connected被调用后, 再发送数据包。
         """
         self._active = True
 
@@ -84,7 +81,7 @@ class WebsocketClient:
 
     def stop(self):
         """
-        停止客户端。
+        停止客户端
         """
         self._active = False
 
@@ -97,15 +94,14 @@ class WebsocketClient:
 
     def join(self):
         """
-        等待后台线程退出。
+        等待后台线程退出
         """
         pass
 
     def send_packet(self, packet: dict):
         """
-        发送数据包字典到服务器。
-
-        如果需要发送非json数据，请重载实现本函数。
+        发送数据包字典到服务器
+        如果需要发送非json数据, 请重载实现本函数。
         """
         if self._ws:
             text: str = json.dumps(packet)
@@ -117,8 +113,7 @@ class WebsocketClient:
     def unpack_data(self, data: str):
         """
         对字符串数据进行json格式解包
-
-        如果需要使用json以外的解包格式，请重载实现本函数。
+        如果需要使用json以外的解包格式, 请重载实现本函数。
         """
         return json.loads(data)
 
@@ -160,9 +155,7 @@ class WebsocketClient:
         text += "LastSentText:\n{}\n".format(self._last_sent_text)
         text += "LastReceivedText:\n{}\n".format(self._last_received_text)
         text += "Exception trace: \n"
-        text += "".join(
-            traceback.format_exception(exception_type, exception_value, tb)
-        )
+        text += "".join(traceback.format_exception(exception_type, exception_value, tb))  # noqa
         return text
 
     async def _run(self):

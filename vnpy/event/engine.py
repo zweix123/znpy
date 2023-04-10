@@ -13,9 +13,7 @@ EVENT_TIMER = "eTimer"
 
 class Event:
     """
-    Event object consists of a type string which is used
-    by event engine for distributing event, and a data
-    object which contains the real data.
+    Event object consists of a type string which is used by event engine for distributing event, and a data object which contains the real data.
     """
 
     def __init__(self, type: str, data: Any = None) -> None:
@@ -30,17 +28,13 @@ HandlerType: callable = Callable[[Event], None]
 
 class EventEngine:
     """
-    Event engine distributes event object based on its type
-    to those handlers registered.
-
-    It also generates timer event by every interval seconds,
-    which can be used for timing purpose.
+    Event engine distributes event object based on its type to those handlers registered.
+    It also generates timer event by every interval seconds, which can be used for timing purpose.
     """
 
     def __init__(self, interval: int = 1) -> None:
         """
-        Timer event is generated every 1 second by default, if
-        interval not specified.
+        Timer event is generated every 1 second by default, if interval not specified.
         """
         self._interval: int = interval
         self._queue: Queue = Queue()
@@ -63,11 +57,9 @@ class EventEngine:
 
     def _process(self, event: Event) -> None:
         """
-        First distribute event to those handlers registered listening
-        to this type.
+        First distribute event to those handlers registered listening to this type.
 
-        Then distribute event to those general handlers which listens
-        to all types.
+        Then distribute event to those general handlers which listens to all types.
         """
         if event.type in self._handlers:
             [handler(event) for handler in self._handlers[event.type]]
@@ -108,8 +100,7 @@ class EventEngine:
 
     def register(self, type: str, handler: HandlerType) -> None:
         """
-        Register a new handler function for a specific event type. Every
-        function can only be registered once for each event type.
+        Register a new handler function for a specific event type. Every function can only be registered once for each event type.
         """
         handler_list: list = self._handlers[type]
         if handler not in handler_list:
@@ -129,8 +120,7 @@ class EventEngine:
 
     def register_general(self, handler: HandlerType) -> None:
         """
-        Register a new handler function for all event types. Every
-        function can only be registered once for each event type.
+        Register a new handler function for all event types. Every function can only be registered once for each event type.
         """
         if handler not in self._general_handlers:
             self._general_handlers.append(handler)

@@ -34,8 +34,7 @@ from .object import (
 
 class BaseGateway(ABC):
     """
-    Abstract gateway class for creating gateways connection
-    to different trading systems.
+    Abstract gateway class for creating gateways connection to different trading systems.
 
     # How to implement a gateway:
 
@@ -62,13 +61,8 @@ class BaseGateway(ABC):
     * on_account
     * on_contract
 
-    All the XxxData passed to callback should be constant, which means that
-        the object should not be modified after passing to on_xxxx.
-    So if you use a cache to store reference of data, use copy.copy to create a new object
-    before passing that data into on_xxxx
-
-
-
+    All the XxxData passed to callback should be constant, which means that the object should not be modified after passing to on_xxxx.
+    So if you use a cache to store reference of data, use copy.copy to create a new object before passing that data into on_xxxx
     """
 
     # Default name for the gateway.
@@ -175,9 +169,7 @@ class BaseGateway(ABC):
             * trades of account: on_trade
         * if any of query above is failed,  write log.
 
-        future plan:
-        response callback/change status instead of write_log
-
+        future plan: response callback/change status instead of write_log
         """
         pass
 
@@ -217,6 +209,7 @@ class BaseGateway(ABC):
     def cancel_order(self, req: CancelRequest) -> None:
         """
         Cancel an existing order.
+
         implementation should finish the tasks blow:
         * send request to server
         """
@@ -242,6 +235,7 @@ class BaseGateway(ABC):
     def cancel_quote(self, req: CancelRequest) -> None:
         """
         Cancel an existing quote.
+
         implementation should finish the tasks blow:
         * send request to server
         """
@@ -299,7 +293,8 @@ class LocalOrderManager:
         self.push_data_callback: Callable = None
 
         # Cancel request buf
-        self.cancel_request_buf: Dict[str, CancelRequest] = {}    # local_orderid: req
+        # local_orderid: req
+        self.cancel_request_buf: Dict[str, CancelRequest] = {}
 
         # Hook cancel order function
         self._cancel_order: Callable = gateway.cancel_order
@@ -310,7 +305,7 @@ class LocalOrderManager:
         Generate a new local orderid.
         """
         self.order_count += 1
-        local_orderid: str = self.order_prefix + str(self.order_count).rjust(8, "0")
+        local_orderid: str = self.order_prefix + str(self.order_count).rjust(8, "0")  # noqa
         return local_orderid
 
     def get_local_orderid(self, sys_orderid: str) -> str:

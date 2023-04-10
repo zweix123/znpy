@@ -83,14 +83,16 @@ ORDERTYPE_VT2BINANCES: Dict[OrderType, Tuple[str, str]] = {
     OrderType.FAK: ("LIMIT", "IOC"),
     OrderType.FOK: ("LIMIT", "FOK"),
 }
-ORDERTYPE_BINANCES2VT: Dict[Tuple[str, str], OrderType] = {v: k for k, v in ORDERTYPE_VT2BINANCES.items()}
+ORDERTYPE_BINANCES2VT: Dict[Tuple[str, str], OrderType] = {
+    v: k for k, v in ORDERTYPE_VT2BINANCES.items()}
 
 # 买卖方向映射
 DIRECTION_VT2BINANCES: Dict[Direction, str] = {
     Direction.LONG: "BUY",
     Direction.SHORT: "SELL"
 }
-DIRECTION_BINANCES2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2BINANCES.items()}
+DIRECTION_BINANCES2VT: Dict[str, Direction] = {
+    v: k for k, v in DIRECTION_VT2BINANCES.items()}
 
 # 数据频率映射
 INTERVAL_VT2BINANCES: Dict[Interval, str] = {
@@ -138,8 +140,10 @@ class BinanceUsdtGateway(BaseGateway):
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
-        self.trade_ws_api: "BinanceUsdtTradeWebsocketApi" = BinanceUsdtTradeWebsocketApi(self)
-        self.market_ws_api: "BinanceUsdtDataWebsocketApi" = BinanceUsdtDataWebsocketApi(self)
+        self.trade_ws_api: "BinanceUsdtTradeWebsocketApi" = BinanceUsdtTradeWebsocketApi(
+            self)
+        self.market_ws_api: "BinanceUsdtDataWebsocketApi" = BinanceUsdtDataWebsocketApi(
+            self)
         self.rest_api: "BinanceUsdtRestApi" = BinanceUsdtRestApi(self)
 
         self.orders: Dict[str, OrderData] = {}
@@ -233,7 +237,8 @@ class BinanceUsdtRestApi(RestClient):
             return request
 
         if request.params:
-            path: str = request.path + "?" + urllib.parse.urlencode(request.params)
+            path: str = request.path + "?" + \
+                urllib.parse.urlencode(request.params)
         else:
             request.params = dict()
             path: str = request.path
@@ -657,9 +662,7 @@ class BinanceUsdtRestApi(RestClient):
         """延长listenKey有效期回报"""
         pass
 
-    def on_keep_user_stream_error(
-        self, exception_type: type, exception_value: Exception, tb, request: Request
-    ) -> None:
+    def on_keep_user_stream_error(self, exception_type: type, exception_value: Exception, tb, request: Request) -> None:  # noqa
         """延长listenKey有效期函数报错回报"""
         # 当延长listenKey有效期时，忽略超时报错
         if not issubclass(exception_type, TimeoutError):
@@ -769,12 +772,12 @@ class BinanceUsdtTradeWebsocketApi(WebsocketClient):
         elif packet["e"] == "listenKeyExpired":
             self.on_listen_key_expired()
 
-    def on_listen_key_expired(self) ->None:
+    def on_listen_key_expired(self) -> None:
         """ListenKey过期"""
         self.gateway.write_log("listenKey过期")
         self.disconnect()
 
-    def disconnect(self) ->None:
+    def disconnect(self) -> None:
         """"主动断开webscoket链接"""
         self._active = False
         ws = self._ws
@@ -821,7 +824,8 @@ class BinanceUsdtTradeWebsocketApi(WebsocketClient):
         order_type: OrderType = ORDERTYPE_BINANCES2VT.get(key, None)
         if not order_type:
             return
-        offset = self.gateway.get_order(ord_data["c"]).offset if self.gateway.get_order(ord_data["c"]) else None
+        offset = self.gateway.get_order(
+            ord_data["c"]).offset if self.gateway.get_order(ord_data["c"]) else None
 
         order: OrderData = OrderData(
             symbol=ord_data["s"],
@@ -867,7 +871,6 @@ class BinanceUsdtTradeWebsocketApi(WebsocketClient):
         """连接断开回报"""
         self.gateway.write_log("交易Websocket API断开")
         self.gateway.rest_api.start_user_stream()
-
 
 
 class BinanceUsdtDataWebsocketApi(WebsocketClient):

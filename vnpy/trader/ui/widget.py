@@ -327,8 +327,7 @@ class BaseMonitor(QtWidgets.QTableWidget):
         """
         Save table data into a csv file
         """
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self, "保存数据", "", "CSV(*.csv)")
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "保存数据", "", "CSV(*.csv)")  # noqa
 
         if not path:
             return
@@ -589,8 +588,7 @@ class ConnectDialog(QtWidgets.QDialog):
         self.setWindowTitle(f"连接{self.gateway_name}")
 
         # Default setting provides field name, field data type and field default value.
-        default_setting: dict = self.main_engine.get_default_setting(
-            self.gateway_name)
+        default_setting: dict = self.main_engine.get_default_setting(self.gateway_name)  # noqa
 
         # Saved setting provides field data used last time.
         loaded_setting: dict = load_json(self.filename)

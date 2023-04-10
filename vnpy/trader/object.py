@@ -14,8 +14,7 @@ ACTIVE_STATUSES = set([Status.SUBMITTING, Status.NOTTRADED, Status.PARTTRADED])
 @dataclass
 class BaseData:
     """
-    Any data object needs a gateway_name as source
-    and should inherit base data.
+    Any data object needs a gateway_name as source and should inherit base data.
     """
 
     gateway_name: str
@@ -197,8 +196,7 @@ class PositionData(BaseData):
 @dataclass
 class AccountData(BaseData):
     """
-    Account data contains information about balance, frozen and
-    available.
+    Account data contains information about balance, frozen and available.
     """
 
     accountid: str

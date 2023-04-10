@@ -1,3 +1,6 @@
+"""
+"""
+
 import urllib
 import hashlib
 import hmac
@@ -72,14 +75,16 @@ ORDERTYPE_VT2BINANCE: Dict[OrderType, str] = {
     OrderType.LIMIT: "LIMIT",
     OrderType.MARKET: "MARKET"
 }
-ORDERTYPE_BINANCE2VT: Dict[str, OrderType] = {v: k for k, v in ORDERTYPE_VT2BINANCE.items()}
+ORDERTYPE_BINANCE2VT: Dict[str, OrderType] = {
+    v: k for k, v in ORDERTYPE_VT2BINANCE.items()}
 
 # 买卖方向映射
 DIRECTION_VT2BINANCE: Dict[Direction, str] = {
     Direction.LONG: "BUY",
     Direction.SHORT: "SELL"
 }
-DIRECTION_BINANCE2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2BINANCE.items()}
+DIRECTION_BINANCE2VT: Dict[str, Direction] = {
+    v: k for k, v in DIRECTION_VT2BINANCE.items()}
 
 # 数据频率映射
 INTERVAL_VT2BINANCE: Dict[Interval, str] = {
@@ -127,8 +132,10 @@ class BinanceSpotGateway(BaseGateway):
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
-        self.trade_ws_api: "BinanceSpotTradeWebsocketApi" = BinanceSpotTradeWebsocketApi(self)
-        self.market_ws_api: "BinanceSpotDataWebsocketApi" = BinanceSpotDataWebsocketApi(self)
+        self.trade_ws_api: "BinanceSpotTradeWebsocketApi" = BinanceSpotTradeWebsocketApi(
+            self)
+        self.market_ws_api: "BinanceSpotDataWebsocketApi" = BinanceSpotDataWebsocketApi(
+            self)
         self.rest_api: "BinanceSpotRestAPi" = BinanceSpotRestAPi(self)
 
         self.orders: Dict[str, OrderData] = {}
@@ -222,7 +229,8 @@ class BinanceSpotRestAPi(RestClient):
             return request
 
         if request.params:
-            path: str = request.path + "?" + urllib.parse.urlencode(request.params)
+            path: str = request.path + "?" + \
+                urllib.parse.urlencode(request.params)
         else:
             request.params = dict()
             path: str = request.path
@@ -276,9 +284,7 @@ class BinanceSpotRestAPi(RestClient):
         self.proxy_host = proxy_host
         self.server = server
 
-        self.connect_time = (
-            int(datetime.now(CHINA_TZ).strftime("%y%m%d%H%M%S")) * self.order_count
-        )
+        self.connect_time = (int(datetime.now(CHINA_TZ).strftime("%y%m%d%H%M%S")) * self.order_count)  # noqa
 
         if self.server == "REAL":
             self.init(REST_HOST, proxy_host, proxy_port)
@@ -466,7 +472,8 @@ class BinanceSpotRestAPi(RestClient):
         for account_data in data["balances"]:
             account: AccountData = AccountData(
                 accountid=account_data["asset"],
-                balance=float(account_data["free"]) + float(account_data["locked"]),
+                balance=float(account_data["free"]) +
+                float(account_data["locked"]),
                 frozen=float(account_data["locked"]),
                 gateway_name=self.gateway_name
             )
@@ -698,12 +705,12 @@ class BinanceSpotTradeWebsocketApi(WebsocketClient):
         elif packet["e"] == "listenKeyExpired":
             self.on_listen_key_expired()
 
-    def on_listen_key_expired(self) ->None:
+    def on_listen_key_expired(self) -> None:
         """ListenKey过期"""
         self.gateway.write_log("listenKey过期")
         self.disconnect()
 
-    def disconnect(self) ->None:
+    def disconnect(self) -> None:
         """"主动断开webscoket链接"""
         self._active = False
         ws = self._ws
@@ -735,7 +742,8 @@ class BinanceSpotTradeWebsocketApi(WebsocketClient):
         else:
             orderid: str = packet["C"]
 
-        offset = self.gateway.get_order(orderid).offset if self.gateway.get_order(orderid) else None
+        offset = self.gateway.get_order(
+            orderid).offset if self.gateway.get_order(orderid) else None
 
         order: OrderData = OrderData(
             symbol=packet["s"].lower(),

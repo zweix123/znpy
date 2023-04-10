@@ -82,14 +82,16 @@ ORDERTYPE_VT2BINANCES: Dict[OrderType, Tuple[str, str]] = {
     OrderType.FAK: ("LIMIT", "IOC"),
     OrderType.FOK: ("LIMIT", "FOK"),
 }
-ORDERTYPE_BINANCES2VT: Dict[Tuple[str, str], OrderType] = {v: k for k, v in ORDERTYPE_VT2BINANCES.items()}
+ORDERTYPE_BINANCES2VT: Dict[Tuple[str, str], OrderType] = {
+    v: k for k, v in ORDERTYPE_VT2BINANCES.items()}
 
 # 买卖方向映射
 DIRECTION_VT2BINANCES: Dict[Direction, str] = {
     Direction.LONG: "BUY",
     Direction.SHORT: "SELL"
 }
-DIRECTION_BINANCES2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2BINANCES.items()}
+DIRECTION_BINANCES2VT: Dict[str, Direction] = {
+    v: k for k, v in DIRECTION_VT2BINANCES.items()}
 
 # 数据频率映射
 INTERVAL_VT2BINANCES: Dict[Interval, str] = {
@@ -135,8 +137,10 @@ class BinanceInverseGateway(BaseGateway):
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
-        self.trade_ws_api: "BinanceInverseTradeWebsocketApi" = BinanceInverseTradeWebsocketApi(self)
-        self.market_ws_api: "BinanceInverseDataWebsocketApi" = BinanceInverseDataWebsocketApi(self)
+        self.trade_ws_api: "BinanceInverseTradeWebsocketApi" = BinanceInverseTradeWebsocketApi(
+            self)
+        self.market_ws_api: "BinanceInverseDataWebsocketApi" = BinanceInverseDataWebsocketApi(
+            self)
         self.rest_api: "BinanceInverseRestApi" = BinanceInverseRestApi(self)
 
         self.orders: Dict[str, OrderData] = {}
@@ -230,7 +234,8 @@ class BinanceInverseRestApi(RestClient):
             return request
 
         if request.params:
-            path: str = request.path + "?" + urllib.parse.urlencode(request.params)
+            path: str = request.path + "?" + \
+                urllib.parse.urlencode(request.params)
         else:
             request.params = dict()
             path: str = request.path
@@ -246,8 +251,7 @@ class BinanceInverseRestApi(RestClient):
             request.params["timestamp"] = timestamp
 
             query: str = urllib.parse.urlencode(sorted(request.params.items()))
-            signature: bytes = hmac.new(self.secret, query.encode(
-                "utf-8"), hashlib.sha256).hexdigest()
+            signature: bytes = hmac.new(self.secret, query.encode("utf-8"), hashlib.sha256).hexdigest()  # noqa
 
             query += "&signature={}".format(signature)
             path: str = request.path + "?" + query
@@ -284,9 +288,7 @@ class BinanceInverseRestApi(RestClient):
         self.proxy_host = proxy_host
         self.server = server
 
-        self.connect_time = (
-            int(datetime.now().strftime("%y%m%d%H%M%S")) * self.order_count
-        )
+        self.connect_time = (int(datetime.now().strftime("%y%m%d%H%M%S")) * self.order_count)  # noqa
 
         if self.server == "REAL":
             self.init(D_REST_HOST, proxy_host, proxy_port)
@@ -723,7 +725,7 @@ class BinanceInverseRestApi(RestClient):
 
                 buf = list(reversed(buf))
                 history.extend(buf)
-                msg: str = f"获取历史数据成功，{req.symbol} - {req.interval.value}，{begin} - {end}"
+                msg: str = f"获取历史数据成功，{req.symbol} - {req.interval.value}, {begin} - {end}"
                 self.gateway.write_log(msg)
 
                 # 如果收到了最后一批数据则终止循环
@@ -766,12 +768,12 @@ class BinanceInverseTradeWebsocketApi(WebsocketClient):
         elif packet["e"] == "listenKeyExpired":
             self.on_listen_key_expired()
 
-    def on_listen_key_expired(self) ->None:
+    def on_listen_key_expired(self) -> None:
         """ListenKey过期"""
         self.gateway.write_log("listenKey过期")
         self.disconnect()
 
-    def disconnect(self) ->None:
+    def disconnect(self) -> None:
         """"主动断开webscoket链接"""
         self._active = False
         ws = self._ws
@@ -818,7 +820,7 @@ class BinanceInverseTradeWebsocketApi(WebsocketClient):
         order_type: OrderType = ORDERTYPE_BINANCES2VT.get(key, None)
         if not order_type:
             return
-        offset = self.gateway.get_order(ord_data["c"]).offset if self.gateway.get_order(ord_data["c"]) else None
+        offset = self.gateway.get_order(ord_data["c"]).offset if self.gateway.get_order(ord_data["c"]) else None  # noqa
 
         order: OrderData = OrderData(
             symbol=ord_data["s"],

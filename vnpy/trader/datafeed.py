@@ -43,13 +43,18 @@ def get_datafeed() -> BaseDatafeed:
 
     # Read datafeed related global setting
     datafeed_name: str = SETTINGS["datafeed.name"]
+
+    if datafeed_name == "":
+        print("没有选择数据服务驱动, 使用默认的RQData数据服务")
+        datafeed_name = "rqdata"
+
     module_name: str = f"vnpy_{datafeed_name}"
 
     # Try to import datafeed module
     try:
         module: ModuleType = import_module(module_name)
     except ModuleNotFoundError:
-        print(f"找不到数据服务驱动{module_name}，使用默认的RQData数据服务")
+        print(f"找不到数据服务驱动{module_name}, 使用默认的RQData数据服务")
         module: ModuleType = import_module("vnpy_rqdata")
 
     # Create datafeed object from module

@@ -227,8 +227,7 @@ class MainEngine:
 
     def close(self) -> None:
         """
-        Make sure every gateway and app is closed properly before
-        programme exit.
+        Make sure every gateway and app is closed properly before programme exit.
         """
         # Stop event engine first to prevent new timer event.
         self.event_engine.stop()
@@ -317,9 +316,7 @@ class LogEngine(BaseEngine):
         log_path: Path = get_folder_path("log")
         file_path: Path = log_path.joinpath(filename)
 
-        file_handler: logging.FileHandler = logging.FileHandler(
-            file_path, mode="a", encoding="utf8"
-        )
+        file_handler: logging.FileHandler = logging.FileHandler(file_path, mode="a", encoding="utf8")  # noqa
         file_handler.setLevel(self.level)
         file_handler.setFormatter(self.formatter)
         self.logger.addHandler(file_handler)
@@ -413,7 +410,7 @@ class OmsEngine(BaseEngine):
             self.active_orders.pop(order.vt_orderid)
 
         # Update to offset converter
-        converter: OffsetConverter = self.offset_converters.get(order.gateway_name, None)
+        converter: OffsetConverter = self.offset_converters.get(order.gateway_name, None)  # noqa
         if converter:
             converter.update_order(order)
 
@@ -423,7 +420,7 @@ class OmsEngine(BaseEngine):
         self.trades[trade.vt_tradeid] = trade
 
         # Update to offset converter
-        converter: OffsetConverter = self.offset_converters.get(trade.gateway_name, None)
+        converter: OffsetConverter = self.offset_converters.get(trade.gateway_name, None)  # noqa
         if converter:
             converter.update_trade(trade)
 
@@ -433,7 +430,7 @@ class OmsEngine(BaseEngine):
         self.positions[position.vt_positionid] = position
 
         # Update to offset converter
-        converter: OffsetConverter = self.offset_converters.get(position.gateway_name, None)
+        converter: OffsetConverter = self.offset_converters.get(position.gateway_name, None)  # noqa
         if converter:
             converter.update_position(position)
 
@@ -449,7 +446,7 @@ class OmsEngine(BaseEngine):
 
         # Initialize offset converter for each gateway
         if contract.gateway_name not in self.offset_converters:
-            self.offset_converters[contract.gateway_name] = OffsetConverter(self)
+            self.offset_converters[contract.gateway_name] = OffsetConverter(self)  # noqa
 
     def process_quote_event(self, event: Event) -> None:
         """"""
@@ -550,7 +547,6 @@ class OmsEngine(BaseEngine):
     def get_all_active_orders(self, vt_symbol: str = "") -> List[OrderData]:
         """
         Get all active orders by vt_symbol.
-
         If vt_symbol is empty, return all active orders.
         """
         if not vt_symbol:
@@ -582,7 +578,7 @@ class OmsEngine(BaseEngine):
         """
         Update order request to offset converter.
         """
-        converter: OffsetConverter = self.offset_converters.get(gateway_name, None)
+        converter: OffsetConverter = self.offset_converters.get(gateway_name, None)  # noqa
         if converter:
             converter.update_order_request(req, vt_orderid)
 
@@ -596,11 +592,11 @@ class OmsEngine(BaseEngine):
         """
         Convert original order request according to given mode.
         """
-        converter: OffsetConverter = self.offset_converters.get(gateway_name, None)
+        converter: OffsetConverter = self.offset_converters.get(gateway_name, None)  # noqa
         if not converter:
             return [req]
 
-        reqs: List[OrderRequest] = converter.convert_order_request(req, lock, net)
+        reqs: List[OrderRequest] = converter.convert_order_request(req, lock, net)  # noqa
         return reqs
 
     def get_converter(self, gateway_name: str) -> OffsetConverter:

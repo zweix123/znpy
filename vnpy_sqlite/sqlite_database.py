@@ -50,7 +50,7 @@ class DbBarData(Model):
 
     class Meta:
         database: PeeweeSqliteDatabase = db
-        indexes: tuple = ((("symbol", "exchange", "interval", "datetime"), True),)
+        indexes: tuple = ((("symbol", "exchange", "interval", "datetime"), True),)  # noqa
 
 
 class DbTickData(Model):
@@ -147,7 +147,7 @@ class SqliteDatabase(BaseDatabase):
         """"""
         self.db: PeeweeSqliteDatabase = db
         self.db.connect()
-        self.db.create_tables([DbBarData, DbTickData, DbBarOverview, DbTickOverview])
+        self.db.create_tables([DbBarData, DbTickData, DbBarOverview, DbTickOverview])  # noqa
 
     def save_bar_data(self, bars: List[BarData], stream: bool = False) -> bool:
         """保存K线数据"""
@@ -286,7 +286,7 @@ class SqliteDatabase(BaseDatabase):
             bar: BarData = BarData(
                 symbol=db_bar.symbol,
                 exchange=Exchange(db_bar.exchange),
-                datetime=datetime.fromtimestamp(db_bar.datetime.timestamp(), DB_TZ),
+                datetime=datetime.fromtimestamp(db_bar.datetime.timestamp(), DB_TZ),  # noqa
                 interval=Interval(db_bar.interval),
                 volume=db_bar.volume,
                 turnover=db_bar.turnover,
@@ -323,7 +323,7 @@ class SqliteDatabase(BaseDatabase):
             tick: TickData = TickData(
                 symbol=db_tick.symbol,
                 exchange=Exchange(db_tick.exchange),
-                datetime=datetime.fromtimestamp(db_tick.datetime.timestamp(), DB_TZ),
+                datetime=datetime.fromtimestamp(db_tick.datetime.timestamp(), DB_TZ),  # noqa
                 name=db_tick.name,
                 volume=db_tick.volume,
                 turnover=db_tick.turnover,

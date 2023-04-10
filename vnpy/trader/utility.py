@@ -127,6 +127,7 @@ def save_json(filename: str, data: dict) -> None:
 def round_to(value: float, target: float) -> float:
     """
     Round price to price tick value.
+    将value四舍五入到最接近的target的倍数
     """
     value: Decimal = Decimal(str(value))
     target: Decimal = Decimal(str(target))

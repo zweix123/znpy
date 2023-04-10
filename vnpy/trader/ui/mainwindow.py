@@ -8,7 +8,7 @@ from functools import partial
 from importlib import import_module
 from typing import Callable, Dict, List, Tuple
 
-import vnpy
+# import vnpy
 from vnpy.event import EventEngine
 
 from .qt import QtCore, QtGui, QtWidgets
@@ -24,11 +24,12 @@ from .widget import (
     ConnectDialog,
     ContractManager,
     TradingWidget,
-    AboutDialog,
+    # AboutDialog,
     GlobalDialog
 )
 from ..engine import MainEngine, BaseApp
-from ..utility import get_icon_path, TRADER_DIR
+# from ..utility import get_icon_path, TRADER_DIR
+from ..utility import get_icon_path
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -43,7 +44,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.main_engine: MainEngine = main_engine
         self.event_engine: EventEngine = event_engine
 
-        self.window_title: str = f"VeighNa Trader 社区版 - {vnpy.__version__}   [{TRADER_DIR}]"
+        # self.window_title: str = f"VeighNa Trader 社区版 - {vnpy.__version__}   [{TRADER_DIR}]"
+        self.window_title: str = "znpy"
 
         self.widgets: Dict[str, QtWidgets.QWidget] = {}
         self.monitors: Dict[str, BaseMonitor] = {}
@@ -89,8 +91,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.save_window_setting("default")
 
-        tick_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
-        position_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        tick_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)  # noqa
+        position_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)  # noqa
 
     def init_menu(self) -> None:
         """"""
@@ -98,26 +100,16 @@ class MainWindow(QtWidgets.QMainWindow):
         bar.setNativeMenuBar(False)     # for mac and linux
 
         # System menu
-        sys_menu: QtWidgets.QMenu = bar.addMenu("系统")
+        sys_menu: QtWidgets.QMenu = bar.addMenu("连接")
 
         gateway_names: list = self.main_engine.get_all_gateway_names()
         for name in gateway_names:
             func: Callable = partial(self.connect, name)
-            self.add_action(
-                sys_menu,
-                f"连接{name}",
-                get_icon_path(__file__, "connect.ico"),
-                func
-            )
+            self.add_action(sys_menu, f"连接{name}", get_icon_path(__file__, "connect.ico"), func)  # noqa
 
         sys_menu.addSeparator()
 
-        self.add_action(
-            sys_menu,
-            "退出",
-            get_icon_path(__file__, "exit.ico"),
-            self.close
-        )
+        self.add_action(sys_menu, "退出", get_icon_path(__file__, "exit.ico"), self.close)  # noqa
 
         # App menu
         app_menu: QtWidgets.QMenu = bar.addMenu("功能")
@@ -125,16 +117,16 @@ class MainWindow(QtWidgets.QMainWindow):
         all_apps: List[BaseApp] = self.main_engine.get_all_apps()
         for app in all_apps:
             ui_module: ModuleType = import_module(app.app_module + ".ui")
-            widget_class: QtWidgets.QWidget = getattr(ui_module, app.widget_name)
+            widget_class: QtWidgets.QWidget = getattr(ui_module, app.widget_name)  # noqa
 
-            func: Callable = partial(self.open_widget, widget_class, app.app_name)
+            func: Callable = partial(self.open_widget, widget_class, app.app_name)  # noqa
 
-            self.add_action(app_menu, app.display_name,app.icon_name, func, True)
+            self.add_action(app_menu, app.display_name, app.icon_name, func, True)  # noqa
 
         # Global setting editor
-        action: QtGui.QAction = QtWidgets.QAction("配置", self)
-        action.triggered.connect(self.edit_global_setting)
-        bar.addAction(action)
+        # action: QtGui.QAction = QtWidgets.QAction("配置", self)
+        # action.triggered.connect(self.edit_global_setting)
+        # bar.addAction(action)
 
         # Help menu
         help_menu: QtWidgets.QMenu = bar.addMenu("帮助")
@@ -154,27 +146,27 @@ class MainWindow(QtWidgets.QMainWindow):
             self.restore_window_setting
         )
 
-        self.add_action(
-            help_menu,
-            "测试邮件",
-            get_icon_path(__file__, "email.ico"),
-            self.send_test_email
-        )
+        # self.add_action(
+        #     help_menu,
+        #     "测试邮件",
+        #     get_icon_path(__file__, "email.ico"),
+        #     self.send_test_email
+        # )
 
-        self.add_action(
-            help_menu,
-            "社区论坛",
-            get_icon_path(__file__, "forum.ico"),
-            self.open_forum,
-            True
-        )
+        # self.add_action(
+        #     help_menu,
+        #     "社区论坛",
+        #     get_icon_path(__file__, "forum.ico"),
+        #     self.open_forum,
+        #     True
+        # )
 
-        self.add_action(
-            help_menu,
-            "关于",
-            get_icon_path(__file__, "about.ico"),
-            partial(self.open_widget, AboutDialog, "about"),
-        )
+        # self.add_action(
+        #     help_menu,
+        #     "关于",
+        #     get_icon_path(__file__, "about.ico"),
+        #     partial(self.open_widget, AboutDialog, "about"),
+        # )
 
     def init_toolbar(self) -> None:
         """"""
@@ -222,7 +214,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Initialize a dock widget.
         """
-        widget: QtWidgets.QWidget = widget_class(self.main_engine, self.event_engine)
+        widget: QtWidgets.QWidget = widget_class(self.main_engine, self.event_engine)  # noqa
         if isinstance(widget, BaseMonitor):
             self.monitors[name] = widget
 
@@ -270,7 +262,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_widget(self, widget_class: QtWidgets.QWidget, name: str) -> None:
         """
-        Open contract manager.
+        Open xxx(包括但不限于contract) manager.
         """
         widget: QtWidgets.QWidget = self.widgets.get(name, None)
         if not widget:

@@ -172,7 +172,8 @@ class BacktestingEngine:
             progress_bar: str = "#" * int(progress * 10 + 1)
             self.output(f"加载进度：{progress_bar} [{progress:.0%}]")
 
-            end: datetime = min(end, self.end)  # Make sure end time stays within set range
+            # Make sure end time stays within set range
+            end: datetime = min(end, self.end)
 
             if self.mode == BacktestingMode.BAR:
                 data: List[BarData] = load_bar_data(
@@ -362,7 +363,7 @@ class BacktestingEngine:
             # All balance value needs to be positive
             positive_balance = (df["balance"] > 0).all()
             if not positive_balance:
-                self.output("回测中出现爆仓（资金小于等于0），无法计算策略统计指标")
+                self.output("回测中出现爆仓(资金小于等于0), 无法计算策略统计指标")
 
         # Calculate statistics value
         if positive_balance:
@@ -381,7 +382,7 @@ class BacktestingEngine:
 
             if isinstance(max_drawdown_end, date):
                 max_drawdown_start = df["balance"][:max_drawdown_end].idxmax()
-                max_drawdown_duration: int = (max_drawdown_end - max_drawdown_start).days
+                max_drawdown_duration: int = (max_drawdown_end - max_drawdown_start).days  # noqa
             else:
                 max_drawdown_duration: int = 0
 
@@ -406,8 +407,8 @@ class BacktestingEngine:
             return_std: float = df["return"].std() * 100
 
             if return_std:
-                daily_risk_free: float = self.risk_free / np.sqrt(self.annual_days)
-                sharpe_ratio: float = (daily_return - daily_risk_free) / return_std * np.sqrt(self.annual_days)
+                daily_risk_free: float = self.risk_free / np.sqrt(self.annual_days)                              # noqa
+                sharpe_ratio: float = (daily_return - daily_risk_free) / return_std * np.sqrt(self.annual_days)  # noqa
             else:
                 sharpe_ratio: float = 0
 
@@ -503,7 +504,7 @@ class BacktestingEngine:
         fig = make_subplots(
             rows=4,
             cols=1,
-            subplot_titles=["Balance", "Drawdown", "Daily Pnl", "Pnl Distribution"],
+            subplot_titles=["Balance", "Drawdown", "Daily Pnl", "Pnl Distribution"],  # noqa
             vertical_spacing=0.06
         )
 
@@ -543,7 +544,7 @@ class BacktestingEngine:
         if not check_optimization_setting(optimization_setting):
             return
 
-        evaluate_func: callable = wrap_evaluate(self, optimization_setting.target_name)
+        evaluate_func: callable = wrap_evaluate(self, optimization_setting.target_name)  # noqa
         results: list = run_bf_optimization(
             evaluate_func,
             optimization_setting,
@@ -571,7 +572,7 @@ class BacktestingEngine:
         if not check_optimization_setting(optimization_setting):
             return
 
-        evaluate_func: callable = wrap_evaluate(self, optimization_setting.target_name)
+        evaluate_func: callable = wrap_evaluate(self, optimization_setting.target_name)  # noqa
         results: list = run_ga_optimization(
             evaluate_func,
             optimization_setting,
@@ -813,9 +814,9 @@ class BacktestingEngine:
         """"""
         price: float = round_to(price, self.pricetick)
         if stop:
-            vt_orderid: str = self.send_stop_order(direction, offset, price, volume)
+            vt_orderid: str = self.send_stop_order(direction, offset, price, volume)   # noqa
         else:
-            vt_orderid: str = self.send_limit_order(direction, offset, price, volume)
+            vt_orderid: str = self.send_limit_order(direction, offset, price, volume)  # noqa
         return [vt_orderid]
 
     def send_stop_order(
@@ -1027,7 +1028,7 @@ class DailyResult:
         self.start_pos = start_pos
         self.end_pos = start_pos
 
-        self.holding_pnl = self.start_pos * (self.close_price - self.pre_close) * size
+        self.holding_pnl = self.start_pos * (self.close_price - self.pre_close) * size  # noqa
 
         # Trading pnl is the pnl from new trade during the day
         self.trade_count = len(self.trades)
@@ -1064,9 +1065,7 @@ def load_bar_data(
     """"""
     database: BaseDatabase = get_database()
 
-    return database.load_bar_data(
-        symbol, exchange, interval, start, end
-    )
+    return database.load_bar_data(symbol, exchange, interval, start, end)  # noqa
 
 
 @lru_cache(maxsize=999)
@@ -1079,9 +1078,7 @@ def load_tick_data(
     """"""
     database: BaseDatabase = get_database()
 
-    return database.load_tick_data(
-        symbol, exchange, start, end
-    )
+    return database.load_tick_data(symbol, exchange, start, end)  # noqa
 
 
 def evaluate(

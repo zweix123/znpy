@@ -35,15 +35,15 @@ class Request(object):
     """
     请求对象
 
-    method: API的请求方法（GET, POST, PUT, DELETE, QUERY）
-    path: API的请求路径（不包含根地址）
-    callback: 请求成功的回调函数
-    params: 请求表单的参数字典
-    data: 请求主体数据，如果传入字典会被自动转换为json
-    headers: 请求头部的字典
+    method   : API的请求方法(GET, POST, PUT, DELETE, QUERY)
+    path     : API的请求路径(不包含根地址)
+    callback : 请求成功的回调函数
+    params   : 请求表单的参数字典
+    data     : 请求主体数据, 如果传入字典会被自动转换为json
+    headers  : 请求头部的字典
     on_failed: 请求失败的回调函数
-    on_error: 请求异常的回调函数
-    extra: 任意其他数据（用于回调时获取）
+    on_error : 请求异常的回调函数
+    extra    : 任意其他数据（用于回调时获取）
     """
 
     def __init__(
@@ -134,7 +134,7 @@ class RestClient(object):
         proxy_host: str = "",
         proxy_port: int = 0
     ) -> None:
-        """传入REST API的根地址，初始化客户端"""
+        """传入REST API的根地址, 初始化客户端"""
         self.url_base = url_base
 
         if proxy_host and proxy_port:
@@ -220,8 +220,7 @@ class RestClient(object):
         """请求触发异常的默认回调"""
         try:
             print("RestClient on error" + "-" * 10)
-            print(self.exception_detail(
-                exception_type, exception_value, tb, request))
+            print(self.exception_detail(exception_type, exception_value, tb, request))  # noqa
         except Exception:
             traceback.print_exc()
 
@@ -233,14 +232,10 @@ class RestClient(object):
         request: Optional[Request],
     ) -> None:
         """将异常信息转化生成字符串"""
-        text = "[{}]: Unhandled RestClient Error:{}\n".format(
-            datetime.now().isoformat(), exception_type
-        )
+        text = "[{}]: Unhandled RestClient Error:{}\n".format(datetime.now().isoformat(), exception_type)  # noqa
         text += "request:{}\n".format(request)
         text += "Exception trace: \n"
-        text += "".join(
-            traceback.format_exception(exception_type, exception_value, tb)
-        )
+        text += "".join(traceback.format_exception(exception_type, exception_value, tb))  # noqa
         return text
 
     async def _get_response(self, request: Request) -> Response:

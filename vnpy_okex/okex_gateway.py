@@ -4,7 +4,6 @@
 3. 只支持单向持仓模式
 """
 
-
 import base64
 import hashlib
 import hmac
@@ -78,14 +77,14 @@ ORDERTYPE_OKEX2VT: Dict[str, OrderType] = {
     "fok": OrderType.FOK,
     "ioc": OrderType.FAK
 }
-ORDERTYPE_VT2OKEX: Dict[OrderType, str] = {v: k for k, v in ORDERTYPE_OKEX2VT.items()}
+ORDERTYPE_VT2OKEX: Dict[OrderType, str] = {v: k for k, v in ORDERTYPE_OKEX2VT.items()}  # noqa
 
 # 买卖方向映射
 DIRECTION_OKEX2VT: Dict[str, Direction] = {
     "buy": Direction.LONG,
     "sell": Direction.SHORT
 }
-DIRECTION_VT2OKEX: Dict[Direction, str] = {v: k for k, v in DIRECTION_OKEX2VT.items()}
+DIRECTION_VT2OKEX: Dict[Direction, str] = {v: k for k, v in DIRECTION_OKEX2VT.items()}  # noqa
 
 # 数据频率映射
 INTERVAL_VT2OKEX: Dict[Interval, str] = {
@@ -101,7 +100,7 @@ PRODUCT_OKEX2VT: Dict[str, Product] = {
     "FUTURES": Product.FUTURES,
     "OPTION": Product.OPTION
 }
-PRODUCT_VT2OKEX: Dict[Product, str] = {v: k for k, v in PRODUCT_OKEX2VT.items()}
+PRODUCT_VT2OKEX: Dict[Product, str] = {v: k for k, v in PRODUCT_OKEX2VT.items()}  # noqa
 
 # 期权类型映射
 OPTIONTYPE_OKEXO2VT: Dict[str, OptionType] = {
@@ -139,8 +138,8 @@ class OkexGateway(BaseGateway):
         super().__init__(event_engine, gateway_name)
 
         self.rest_api: "OkexRestApi" = OkexRestApi(self)
-        self.ws_public_api: "OkexWebsocketPublicApi" = OkexWebsocketPublicApi(self)
-        self.ws_private_api: "OkexWebsocketPrivateApi" = OkexWebsocketPrivateApi(self)
+        self.ws_public_api: "OkexWebsocketPublicApi" = OkexWebsocketPublicApi(self)  # noqa
+        self.ws_private_api: "OkexWebsocketPrivateApi" = OkexWebsocketPrivateApi(self)  # noqa
 
         self.orders: Dict[str, OrderData] = {}
 
@@ -314,7 +313,7 @@ class OkexRestApi(RestClient):
             )
             self.gateway.on_order(order)
 
-        self.gateway.write_log("委托信息查询成功")
+        self.gateway.write_log("REST API委托信息查询成功")
 
     def on_query_time(self, packet: dict, request: Request) -> None:
         """时间查询回报"""
@@ -335,14 +334,11 @@ class OkexRestApi(RestClient):
         msg: str = f"触发异常，状态码：{exception_type}，信息：{exception_value}"
         self.gateway.write_log(msg)
 
-        sys.stderr.write(
-            self.exception_detail(exception_type, exception_value, tb, request)
-        )
+        sys.stderr.write(self.exception_detail(exception_type, exception_value, tb, request))  # noqa
 
     def query_history(self, req: HistoryRequest) -> List[BarData]:
         """
         查询历史数据
-
         K线数据每个粒度最多可获取最近1440条
         """
         buf: Dict[datetime, BarData] = {}
@@ -398,7 +394,7 @@ class OkexRestApi(RestClient):
 
                 begin: str = data["data"][-1][0]
                 end: str = data["data"][0][0]
-                msg: str = f"获取历史数据成功，{req.symbol} - {req.interval.value}，{parse_timestamp(begin)} - {parse_timestamp(end)}"
+                msg: str = f"获取历史数据成功，{req.symbol} - {req.interval.value}, {parse_timestamp(begin)} - {parse_timestamp(end)}"
                 self.gateway.write_log(msg)
 
                 # 更新结束时间
@@ -512,7 +508,7 @@ class OkexWebsocketPublicApi(WebsocketClient):
             elif event == "error":
                 code: str = packet["code"]
                 msg: str = packet["msg"]
-                self.gateway.write_log(f"Websocket Public API请求异常, 状态码：{code}, 信息：{msg}")
+                self.gateway.write_log(f"Websocket Public API请求异常, 状态码：{code}, 信息：{msg}")  # noqa
         else:
             channel: str = packet["arg"]["channel"]
             callback: callable = self.callbacks.get(channel, None)
@@ -559,7 +555,7 @@ class OkexWebsocketPublicApi(WebsocketClient):
             if product == Product.OPTION:
                 contract.option_strike = float(d["stk"])
                 contract.option_type = OPTIONTYPE_OKEXO2VT[d["optType"]]
-                contract.option_expiry = datetime.fromtimestamp(int(d["expTime"]) / 1000)
+                contract.option_expiry = datetime.fromtimestamp(int(d["expTime"]) / 1000)  # noqa
                 contract.option_portfolio = d["uly"]
                 contract.option_index = d["stk"]
                 contract.option_underlying = "_".join([
@@ -684,15 +680,13 @@ class OkexWebsocketPrivateApi(WebsocketClient):
         msg: str = f"私有频道触发异常，类型：{exception_type}，信息：{exception_value}"
         self.gateway.write_log(msg)
 
-        sys.stderr.write(
-            self.exception_detail(exception_type, exception_value, tb)
-        )
+        sys.stderr.write(self.exception_detail(exception_type, exception_value, tb))  # noqa
 
     def on_api_error(self, packet: dict) -> None:
         """用户登录请求回报"""
         code: str = packet["code"]
         msg: str = packet["msg"]
-        self.gateway.write_log(f"Websocket Private API请求失败, 状态码：{code}, 信息：{msg}")
+        self.gateway.write_log(f"Websocket Private API请求失败, 状态码：{code}, 信息：{msg}")  # noqa
 
     def on_login(self, packet: dict) -> None:
         """用户登录请求回报"""
@@ -715,7 +709,7 @@ class OkexWebsocketPrivateApi(WebsocketClient):
 
             # 将成交数量四舍五入到正确精度
             trade_volume: float = float(d["fillSz"])
-            contract: ContractData = symbol_contract_map.get(order.symbol, None)
+            contract: ContractData = symbol_contract_map.get(order.symbol, None)  # noqa
             if contract:
                 trade_volume = round_to(trade_volume, contract.min_volume)
 
@@ -744,7 +738,7 @@ class OkexWebsocketPrivateApi(WebsocketClient):
                 balance=float(detail["eq"]),
                 gateway_name=self.gateway_name,
             )
-            account.available = float(detail["availEq"]) if len(detail["availEq"]) != 0 else 0.0
+            account.available = float(detail["availEq"]) if len(detail["availEq"]) != 0 else 0.0  # noqa
             account.frozen = account.balance - account.available
             self.gateway.on_account(account)
 

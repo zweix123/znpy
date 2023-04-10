@@ -76,11 +76,9 @@ class CtaManager(QtWidgets.QWidget):
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setWidget(scroll_widget)
 
-        self.log_monitor: LogMonitor = LogMonitor(self.main_engine, self.event_engine)
+        self.log_monitor: LogMonitor = LogMonitor(self.main_engine, self.event_engine)  # noqa
 
-        self.stop_order_monitor: StopOrderMonitor = StopOrderMonitor(
-            self.main_engine, self.event_engine
-        )
+        self.stop_order_monitor: StopOrderMonitor = StopOrderMonitor(self.main_engine, self.event_engine)  # noqa
 
         self.strategy_combo = QtWidgets.QComboBox()
         self.strategy_combo.setMinimumWidth(200)
@@ -145,7 +143,8 @@ class CtaManager(QtWidgets.QWidget):
             manager: StrategyManager = self.managers[strategy_name]
             manager.update_data(data)
         else:
-            manager: StrategyManager = StrategyManager(self, self.cta_engine, data)
+            manager: StrategyManager = StrategyManager(
+                self, self.cta_engine, data)
             self.scroll_layout.insertWidget(0, manager)
             self.managers[strategy_name] = manager
 
@@ -164,8 +163,10 @@ class CtaManager(QtWidgets.QWidget):
         if not class_name:
             return
 
-        parameters: dict = self.cta_engine.get_strategy_class_parameters(class_name)
-        editor: SettingEditor = SettingEditor(parameters, class_name=class_name)
+        parameters: dict = self.cta_engine.get_strategy_class_parameters(
+            class_name)
+        editor: SettingEditor = SettingEditor(
+            parameters, class_name=class_name)
         n: int = editor.exec_()
 
         if n == editor.Accepted:
@@ -173,9 +174,7 @@ class CtaManager(QtWidgets.QWidget):
             vt_symbol: str = setting.pop("vt_symbol")
             strategy_name: str = setting.pop("strategy_name")
 
-            self.cta_engine.add_strategy(
-                class_name, strategy_name, vt_symbol, setting
-            )
+            self.cta_engine.add_strategy(class_name, strategy_name, vt_symbol, setting)  # noqa
 
     def find_strategy(self) -> None:
         """"""
@@ -250,8 +249,8 @@ class StrategyManager(QtWidgets.QFrame):
         label: QtWidgets.QLabel = QtWidgets.QLabel(label_text)
         label.setAlignment(QtCore.Qt.AlignCenter)
 
-        self.parameters_monitor: DataMonitor = DataMonitor(self._data["parameters"])
-        self.variables_monitor: DataMonitor = DataMonitor(self._data["variables"])
+        self.parameters_monitor: DataMonitor = DataMonitor(self._data["parameters"])  # noqa
+        self.variables_monitor: DataMonitor = DataMonitor(self._data["variables"])    # noqa
 
         hbox: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout()
         hbox.addWidget(self.init_button)
@@ -310,8 +309,8 @@ class StrategyManager(QtWidgets.QFrame):
         """"""
         strategy_name: str = self._data["strategy_name"]
 
-        parameters: dict = self.cta_engine.get_strategy_parameters(strategy_name)
-        editor: SettingEditor = SettingEditor(parameters, strategy_name=strategy_name)
+        parameters: dict = self.cta_engine.get_strategy_parameters(strategy_name)       # noqa
+        editor: SettingEditor = SettingEditor(parameters, strategy_name=strategy_name)  # noqa
         n: int = editor.exec_()
 
         if n == editor.Accepted:
@@ -357,7 +356,7 @@ class DataMonitor(QtWidgets.QTableWidget):
         for column, name in enumerate(self._data.keys()):
             value = self._data[name]
 
-            cell: QtWidgets.QTableWidgetItem = QtWidgets.QTableWidgetItem(str(value))
+            cell: QtWidgets.QTableWidgetItem = QtWidgets.QTableWidgetItem(str(value))  # noqa
             cell.setTextAlignment(QtCore.Qt.AlignCenter)
 
             self.setItem(0, column, cell)
@@ -423,9 +422,7 @@ class LogMonitor(BaseMonitor):
         """
         super(LogMonitor, self).init_ui()
 
-        self.horizontalHeader().setSectionResizeMode(
-            1, QtWidgets.QHeaderView.Stretch
-        )
+        self.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)  # noqa
 
     def insert_new_row(self, data) -> None:
         """
