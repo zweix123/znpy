@@ -481,17 +481,11 @@ class CtaEngine(BaseEngine):
 
         if stop:
             if contract.stop_supported:
-                return self.send_server_stop_order(
-                    strategy, contract, direction, offset, price, volume, lock, net
-                )
+                return self.send_server_stop_order(strategy, contract, direction, offset, price, volume, lock, net)
             else:
-                return self.send_local_stop_order(
-                    strategy, direction, offset, price, volume, lock, net
-                )
+                return self.send_local_stop_order(strategy, direction, offset, price, volume, lock, net)
         else:
-            return self.send_limit_order(
-                strategy, contract, direction, offset, price, volume, lock, net
-            )
+            return self.send_limit_order(strategy, contract, direction, offset, price, volume, lock, net)
 
     def cancel_order(self, strategy: CtaTemplate, vt_orderid: str) -> None:
         """

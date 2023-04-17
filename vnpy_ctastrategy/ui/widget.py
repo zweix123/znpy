@@ -128,9 +128,7 @@ class CtaManager(QtWidgets.QWidget):
         """"""
         self.signal_strategy.connect(self.process_strategy_event)
 
-        self.event_engine.register(
-            EVENT_CTA_STRATEGY, self.signal_strategy.emit
-        )
+        self.event_engine.register(EVENT_CTA_STRATEGY, self.signal_strategy.emit)  # noqa
 
     def process_strategy_event(self, event) -> None:
         """
@@ -143,8 +141,7 @@ class CtaManager(QtWidgets.QWidget):
             manager: StrategyManager = self.managers[strategy_name]
             manager.update_data(data)
         else:
-            manager: StrategyManager = StrategyManager(
-                self, self.cta_engine, data)
+            manager: StrategyManager = StrategyManager(self, self.cta_engine, data)  # noqa
             self.scroll_layout.insertWidget(0, manager)
             self.managers[strategy_name] = manager
 
@@ -243,9 +240,7 @@ class StrategyManager(QtWidgets.QFrame):
         class_name: str = self._data["class_name"]
         author: str = self._data["author"]
 
-        label_text: str = (
-            f"{strategy_name}  -  {vt_symbol}  ({class_name} by {author})"
-        )
+        label_text: str = (f"{strategy_name}  -  {vt_symbol}  ({class_name} by {author})")  # noqa
         label: QtWidgets.QLabel = QtWidgets.QLabel(label_text)
         label.setAlignment(QtCore.Qt.AlignCenter)
 

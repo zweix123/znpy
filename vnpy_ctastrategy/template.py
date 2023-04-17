@@ -6,6 +6,8 @@ from vnpy.trader.constant import Interval, Direction, Offset
 from vnpy.trader.object import BarData, TickData, OrderData, TradeData
 from vnpy.trader.utility import virtual
 
+from vnpy_ctastrategy.engine import CtaEngine
+
 from .base import StopOrder, EngineType
 
 
@@ -24,7 +26,7 @@ class CtaTemplate(ABC):
         setting: dict,
     ) -> None:
         """"""
-        self.cta_engine: Any = cta_engine
+        self.cta_engine: CtaEngine = cta_engine
         self.strategy_name: str = strategy_name
         self.vt_symbol: str = vt_symbol
 
@@ -318,7 +320,8 @@ class CtaTemplate(ABC):
         """
         Load historical tick data for initializing strategy.
         """
-        ticks: List[TickData] = self.cta_engine.load_tick(self.vt_symbol, days, self.on_tick)
+        ticks: List[TickData] = self.cta_engine.load_tick(
+            self.vt_symbol, days, self.on_tick)
 
         for tick in ticks:
             self.on_tick(tick)
@@ -487,15 +490,19 @@ class TargetPosTemplate(CtaTemplate):
                     if pos_change < abs(self.pos):
                         vt_orderids: list = self.cover(long_price, pos_change)
                     else:
-                        vt_orderids: list = self.cover(long_price, abs(self.pos))
+                        vt_orderids: list = self.cover(
+                            long_price, abs(self.pos))
                 else:
                     vt_orderids: list = self.buy(long_price, abs(pos_change))
             else:
                 if self.pos > 0:
                     if abs(pos_change) < self.pos:
-                        vt_orderids: list = self.sell(short_price, abs(pos_change))
+                        vt_orderids: list = self.sell(
+                            short_price, abs(pos_change))
                     else:
-                        vt_orderids: list = self.sell(short_price, abs(self.pos))
+                        vt_orderids: list = self.sell(
+                            short_price, abs(self.pos))
                 else:
-                    vt_orderids: list = self.short(short_price, abs(pos_change))
+                    vt_orderids: list = self.short(
+                        short_price, abs(pos_change))
             self.active_orderids.extend(vt_orderids)
