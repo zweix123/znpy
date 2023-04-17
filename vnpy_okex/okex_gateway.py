@@ -433,7 +433,8 @@ class OkexRestApi(RestClient):
                     break
 
                 for bar_list in data["data"]:
-                    ts, o, h, l, c, vol, _ = bar_list
+                    # ts, o, h, l, c, vol, _ = bar_list
+                    ts, o, h, l, c, vol, volCcy, volCcyQuote, confirm = bar_list
                     dt = parse_timestamp(ts)
                     bar: BarData = BarData(
                         symbol=req.symbol,

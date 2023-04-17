@@ -6,7 +6,9 @@ from vnpy.trader.constant import Interval, Direction, Offset
 from vnpy.trader.object import BarData, TickData, OrderData, TradeData
 from vnpy.trader.utility import virtual
 
-from vnpy_ctastrategy.engine import CtaEngine
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from vnpy_ctastrategy.engine import CtaEngine
 
 from .base import StopOrder, EngineType
 
