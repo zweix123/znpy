@@ -287,6 +287,19 @@ class OkexRestApi(RestClient):
 
         self.query_time()
         self.query_order()
+        for instType in PRODUCT_OKEX2VT.keys():
+            if instType == "OPTION":
+                continue
+            self.query_instruments(instType)
+
+    def query_instruments(self, instType) -> None:
+        """查询合约"""
+        self.add_request(
+            "GET",
+            "/api/v5/public/instruments",
+            callback=self.on_query_instruments,
+            params={"instType": instType}
+        )
 
     def query_order(self) -> None:
         """查询未成交委托"""
@@ -303,6 +316,50 @@ class OkexRestApi(RestClient):
             "/api/v5/public/time",
             callback=self.on_query_time
         )
+
+    def on_query_instruments(self, packet: dict, request: Request) -> None:
+        """查询合约"""
+        instType = ""
+        for instrument in packet['data']:
+            symbol: str = instrument["instId"]
+            product: Product = PRODUCT_OKEX2VT[instrument["instType"]]
+            net_position: bool = True
+            instType = product
+            if product == Product.SPOT:
+                size: float = 1
+            else:
+                size: float = float(instrument["ctMult"])
+
+            contract: ContractData = ContractData(
+                symbol=symbol,
+                exchange=Exchange.OKEX,
+                name=symbol,
+                product=product,
+                size=size,
+                pricetick=float(instrument["tickSz"]),
+                min_volume=float(instrument["minSz"]),
+                history_data=True,
+                net_position=net_position,
+                gateway_name=self.gateway_name,
+            )
+
+            # 处理期权相关信息
+            if product == Product.OPTION:
+                contract.option_strike = float(instrument["stk"])
+                contract.option_type = PRODUCT_OKEX2VT[instrument["optType"]]
+                contract.option_expiry = datetime.fromtimestamp(int(instrument["expTime"]) / 1000)  # noqa
+                contract.option_portfolio = instrument["uly"]
+                contract.option_index = instrument["stk"]
+                contract.option_underlying = "_".join([
+                    contract.option_portfolio,
+                    contract.option_expiry.strftime("%Y%m%d")
+                ])
+
+            # 缓存合约信息并推送
+            symbol_contract_map[contract.symbol] = contract
+            self.gateway.on_contract(contract)
+
+        self.gateway.write_log(f"{instType}合约信息查询成功")
 
     def on_query_order(self, packet: dict, request: Request) -> None:
         """未成交委托查询回报"""
