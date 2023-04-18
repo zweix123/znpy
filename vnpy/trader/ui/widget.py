@@ -1150,9 +1150,9 @@ class AboutDialog(QtWidgets.QDialog):
             Created by VeighNa Technology
 
 
-            License：MIT
-            Website：www.vnpy.com
-            Github：www.github.com/vnpy/vnpy
+            License: MIT
+            Website: www.vnpy.com
+            Github: www.github.com/vnpy/vnpy
 
 
             VeighNa - {vnpy_version}
@@ -1239,7 +1239,7 @@ class GlobalDialog(QtWidgets.QDialog):
         QtWidgets.QMessageBox.information(
             self,
             "注意",
-            "全局配置的修改需要重启后才会生效！",
+            "全局配置的修改需要重启后才会生效!",
             QtWidgets.QMessageBox.Ok
         )
 

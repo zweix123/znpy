@@ -277,9 +277,7 @@ class LogEngine(BaseEngine):
         self.logger: Logger = logging.getLogger("veighna")
         self.logger.setLevel(self.level)
 
-        self.formatter: logging.Formatter = logging.Formatter(
-            "%(asctime)s  %(levelname)s: %(message)s"
-        )
+        self.formatter: logging.Formatter = logging.Formatter("%(asctime)s  %(levelname)s: %(message)s")  # noqa
 
         self.add_null_handler()
 
@@ -648,9 +646,7 @@ class EmailEngine(BaseEngine):
                 with smtplib.SMTP_SSL(
                     SETTINGS["email.server"], SETTINGS["email.port"]
                 ) as smtp:
-                    smtp.login(
-                        SETTINGS["email.username"], SETTINGS["email.password"]
-                    )
+                    smtp.login(SETTINGS["email.username"], SETTINGS["email.password"])  # noqa
                     smtp.send_message(msg)
             except Empty:
                 pass

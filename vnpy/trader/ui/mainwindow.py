@@ -118,9 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for app in all_apps:
             ui_module: ModuleType = import_module(app.app_module + ".ui")
             widget_class: QtWidgets.QWidget = getattr(ui_module, app.widget_name)  # noqa
-
             func: Callable = partial(self.open_widget, widget_class, app.app_name)  # noqa
-
             self.add_action(app_menu, app.display_name, app.icon_name, func, True)  # noqa
 
         # Global setting editor

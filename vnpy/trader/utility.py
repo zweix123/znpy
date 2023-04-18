@@ -22,9 +22,7 @@ if sys.version_info >= (3, 9):
 else:
     from backports.zoneinfo import ZoneInfo, available_timezones    # noqa
 
-
-log_formatter: logging.Formatter = logging.Formatter(
-    '[%(asctime)s] %(message)s')
+log_formatter: logging.Formatter = logging.Formatter('[%(asctime)s] %(message)s')  # noqa
 
 
 def extract_vt_symbol(vt_symbol: str) -> Tuple[str, Exchange]:

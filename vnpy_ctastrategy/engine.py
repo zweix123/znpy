@@ -663,7 +663,7 @@ class CtaEngine(BaseEngine):
         strategy: CtaTemplate = self.strategies[strategy_name]
 
         if strategy.inited:
-            self.write_log(f"{strategy_name}已经完成初始化，禁止重复操作")
+            self.write_log(f"{strategy_name}已经完成初始化, 禁止重复操作")
             return
 
         self.write_log(f"{strategy_name}开始执行初始化")

@@ -204,7 +204,7 @@ class WebsocketClient:
         self._last_received_text = text[:1000]
 
 
-def start_event_loop(loop: AbstractEventLoop) -> AbstractEventLoop:
+def start_event_loop(loop: AbstractEventLoop) -> None:
     """启动事件循环"""
     # 如果事件循环未运行，则创建后台线程来运行
     if not loop.is_running():

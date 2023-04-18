@@ -120,7 +120,7 @@ class OkexGateway(BaseGateway):
     vn.py用于对接OKEX统一账户的交易接口。
     """
 
-    default_name: str = "OKX"
+    default_name: str = "OKEX"
 
     default_setting: Dict[str, Any] = {
         "API Key": "",

@@ -20,7 +20,7 @@ QtCore.QDate.toPyDate = QtCore.QDate.toPython
 QtCore.QDateTime.toPyDate = QtCore.QDateTime.toPython
 
 
-def create_qapp(app_name: str = "VeighNa Trader") -> QtWidgets.QApplication:
+def create_qapp(app_name: str = "znpy") -> QtWidgets.QApplication:
     """
     Create Qt Application.
     """
@@ -29,8 +29,7 @@ def create_qapp(app_name: str = "VeighNa Trader") -> QtWidgets.QApplication:
     qapp.setStyleSheet(qdarkstyle.load_stylesheet(qt_api="pyside6"))
 
     # Set up font
-    font: QtGui.QFont = QtGui.QFont(
-        SETTINGS["font.family"], SETTINGS["font.size"])
+    font: QtGui.QFont = QtGui.QFont(SETTINGS["font.family"], SETTINGS["font.size"])  # noqa
     qapp.setFont(font)
 
     # Set up icon
@@ -59,11 +58,9 @@ def create_qapp(app_name: str = "VeighNa Trader") -> QtWidgets.QApplication:
     if sys.version_info >= (3, 8):
         def threading_excepthook(args: threading.ExceptHookArgs) -> None:
             """Show exception detail from background threads with QMessageBox."""
-            sys.__excepthook__(
-                args.exc_type, args.exc_value, args.exc_traceback)
+            sys.__excepthook__(args.exc_type, args.exc_value, args.exc_traceback)  # noqa
 
-            msg: str = "".join(traceback.format_exception(
-                args.exc_type, args.exc_value, args.exc_traceback))
+            msg: str = "".join(traceback.format_exception(args.exc_type, args.exc_value, args.exc_traceback))  # noqa
             exception_widget.signal.emit(msg)
 
         threading.excepthook = threading_excepthook
@@ -93,15 +90,15 @@ class ExceptionWidget(QtWidgets.QWidget):
         copy_button: QtWidgets.QPushButton = QtWidgets.QPushButton("复制")
         copy_button.clicked.connect(self._copy_text)
 
-        community_button: QtWidgets.QPushButton = QtWidgets.QPushButton("求助")
-        community_button.clicked.connect(self._open_community)
+        # community_button: QtWidgets.QPushButton = QtWidgets.QPushButton("求助")
+        # community_button.clicked.connect(self._open_community)
 
         close_button: QtWidgets.QPushButton = QtWidgets.QPushButton("关闭")
         close_button.clicked.connect(self.close)
 
         hbox: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout()
         hbox.addWidget(copy_button)
-        hbox.addWidget(community_button)
+        # hbox.addWidget(community_button)
         hbox.addWidget(close_button)
 
         vbox: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout()

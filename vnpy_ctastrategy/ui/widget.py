@@ -127,10 +127,9 @@ class CtaManager(QtWidgets.QWidget):
     def register_event(self) -> None:
         """"""
         self.signal_strategy.connect(self.process_strategy_event)
-
         self.event_engine.register(EVENT_CTA_STRATEGY, self.signal_strategy.emit)  # noqa
 
-    def process_strategy_event(self, event) -> None:
+    def process_strategy_event(self, event: Event) -> None:
         """
         Update strategy status onto its monitor.
         """
@@ -160,10 +159,8 @@ class CtaManager(QtWidgets.QWidget):
         if not class_name:
             return
 
-        parameters: dict = self.cta_engine.get_strategy_class_parameters(
-            class_name)
-        editor: SettingEditor = SettingEditor(
-            parameters, class_name=class_name)
+        parameters: dict = self.cta_engine.get_strategy_class_parameters(class_name)  # noqa
+        editor: SettingEditor = SettingEditor(parameters, class_name=class_name)  # noqa
         n: int = editor.exec_()
 
         if n == editor.Accepted:

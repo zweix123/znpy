@@ -26,9 +26,9 @@ if platform.system() == 'Windows':
     set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
-CALLBACK_TYPE = Callable[[dict, "Request"], None]
-ON_FAILED_TYPE = Callable[[int, "Request"], None]
-ON_ERROR_TYPE = Callable[[Type, Exception, TracebackType, "Request"], None]
+CALLBACK_TYPE = Callable[[dict, "Request"], None]  # callback_type
+ON_FAILED_TYPE = Callable[[int, "Request"], None]  # on_failed_type
+ON_ERROR_TYPE = Callable[[Type, Exception, TracebackType, "Request"], None]  # on_error_type  # noqa
 
 
 class Request(object):
@@ -74,25 +74,19 @@ class Request(object):
 
     def __str__(self):
         """字符串表示"""
-        if self.response is None:
-            status_code = "terminated"
-        else:
-            status_code = self.response.status_code
-
         return (
             "request : {} {} because {}: \n"
             "headers: {}\n"
             "params: {}\n"
             "data: {}\n"
-            "response:"
-            "{}\n".format(
+            "response: {}\n".format(
                 self.method,
                 self.path,
-                status_code,
+                self.response.status_code if self.response is not None else "terminated",
                 self.headers,
                 self.params,
                 self.data,
-                "" if self.response is None else self.response.text,
+                self.response.text if self.response is not None else ""
             )
         )
 
@@ -182,7 +176,6 @@ class RestClient(object):
             on_error,
             extra,
         )
-
         coro: coroutine = self._process_request(request)
         run_coroutine_threadsafe(coro, self.loop)
         return request
@@ -202,7 +195,7 @@ class RestClient(object):
         return fut.result()
 
     def sign(self, request: Request) -> None:
-        """签名函数（由用户继承实现具体签名逻辑）"""
+        """签名函数(由用户继承实现具体签名逻辑)"""
         return request
 
     def on_failed(self, status_code: int, request: Request) -> None:
@@ -267,24 +260,18 @@ class RestClient(object):
             response: Response = await self._get_response(request)
             status_code: int = response.status_code
 
-            # 2xx的代码表示处理成功
-            if status_code // 100 == 2:
+            if status_code // 100 == 2:  # 2xx的代码表示处理成功
                 request.callback(response.json(), request)
-            # 否则说明处理失败
-            else:
-                # 设置了专用失败回调
-                if request.on_failed:
+            else:  # 否则说明处理失败
+                if request.on_failed:  # 设置了专用失败回调
                     request.on_failed(status_code, request)
-                # 否则使用全局失败回调
-                else:
+                else:  # 否则使用全局失败回调
                     self.on_failed(status_code, request)
         except Exception:
             t, v, tb = sys.exc_info()
-            # 设置了专用异常回调
-            if request.on_error:
+            if request.on_error:  # 设置了专用异常回调
                 request.on_error(t, v, tb, request)
-            # 否则使用全局异常回调
-            else:
+            else:  # 否则使用全局异常回调
                 self.on_error(t, v, tb, request)
 
     def _make_full_url(self, path: str) -> str:
