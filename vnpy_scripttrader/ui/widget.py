@@ -89,15 +89,8 @@ class ScriptManager(QtWidgets.QWidget):
 
     def select_script(self) -> None:
         """"""
-        cwd: str = str(Path.cwd())
-
-        path, type_ = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            u"载入策略脚本",
-            cwd,
-            "Python File(*.py)"
-        )
-
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "载入策略脚本", str(Path.cwd()), "Python File(*.py)")  # noqa
+        # path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "载入策略脚本", filter="Python File(*.py)")  # noqa
         if path:
             self.script_path = path
             self.strategy_line.setText(path)

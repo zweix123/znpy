@@ -52,6 +52,8 @@ class ScriptEngine(BaseEngine):
         result: bool = self.datafeed.init()
         if result:
             self.write_log("数据服务初始化成功")
+        else:
+            self.write_log("数据服务初始化失败")
 
     def start_strategy(self, script_path: str) -> None:
         """运行策略线程中的策略方法"""
@@ -59,8 +61,7 @@ class ScriptEngine(BaseEngine):
             return
         self.strategy_active: bool = True
 
-        self.strategy_thread: Thread = Thread(
-            target=self.run_strategy, args=(script_path,))
+        self.strategy_thread: Thread = Thread(target=self.run_strategy, args=(script_path,))  # noqa
         self.strategy_thread.start()
 
         self.write_log("策略交易脚本启动")
@@ -122,13 +123,13 @@ class ScriptEngine(BaseEngine):
             reference=APP_NAME
         )
 
-        vt_orderid: str = self.main_engine.send_order(req, contract.gateway_name)
+        vt_orderid: str = self.main_engine.send_order(req, contract.gateway_name)  # noqa
         return vt_orderid
 
     def subscribe(self, vt_symbols) -> None:
         """"""
         for vt_symbol in vt_symbols:
-            contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)
+            contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)  # noqa
             if contract:
                 req: SubscribeRequest = SubscribeRequest(
                     symbol=contract.symbol,
@@ -276,7 +277,7 @@ class ScriptEngine(BaseEngine):
         use_df: bool = False
     ) -> Sequence[BarData]:
         """"""
-        contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)
+        contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)  # noqa
         if not contract:
             return []
 
@@ -296,7 +297,7 @@ class ScriptEngine(BaseEngine):
     def write_log(self, msg: str) -> None:
         """"""
         log: LogData = LogData(msg=msg, gateway_name=APP_NAME)
-        print(f"{log.time}\t{log.msg}")
+        # print(f"{log.time}\t{log.msg}")
 
         event: Event = Event(EVENT_SCRIPT_LOG, log)
         self.event_engine.put(event)
