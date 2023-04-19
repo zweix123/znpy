@@ -469,7 +469,6 @@ class TargetPosTemplate(CtaTemplate):
                 short_price = self.last_tick.bid_price_1 - self.tick_add
                 if self.last_tick.limit_down:
                     short_price = max(short_price, self.last_tick.limit_down)
-
         else:
             if pos_change > 0:
                 long_price = self.last_bar.close_price + self.tick_add
@@ -481,8 +480,8 @@ class TargetPosTemplate(CtaTemplate):
                 vt_orderids: list = self.buy(long_price, abs(pos_change))
             else:
                 vt_orderids: list = self.short(short_price, abs(pos_change))
-            self.active_orderids.extend(vt_orderids)
 
+            self.active_orderids.extend(vt_orderids)
         else:
             if self.active_orderids:
                 return
@@ -492,19 +491,15 @@ class TargetPosTemplate(CtaTemplate):
                     if pos_change < abs(self.pos):
                         vt_orderids: list = self.cover(long_price, pos_change)
                     else:
-                        vt_orderids: list = self.cover(
-                            long_price, abs(self.pos))
+                        vt_orderids: list = self.cover(long_price, abs(self.pos))  # noqa
                 else:
                     vt_orderids: list = self.buy(long_price, abs(pos_change))
             else:
                 if self.pos > 0:
                     if abs(pos_change) < self.pos:
-                        vt_orderids: list = self.sell(
-                            short_price, abs(pos_change))
+                        vt_orderids: list = self.sell(short_price, abs(pos_change))  # noqa
                     else:
-                        vt_orderids: list = self.sell(
-                            short_price, abs(self.pos))
+                        vt_orderids: list = self.sell(short_price, abs(self.pos))  # noqa
                 else:
-                    vt_orderids: list = self.short(
-                        short_price, abs(pos_change))
+                    vt_orderids: list = self.short(short_price, abs(pos_change))  # noqa
             self.active_orderids.extend(vt_orderids)
