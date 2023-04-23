@@ -1,3 +1,5 @@
+由于工作原因，不再需要vnpy的代码，所以该项目暂时不再维护，该项目为开源社区作为唯一贡献就是[这份代码解析](https://github.com/zweix123/CS-notes/blob/master/Quant/vnpy.md)，主要是[vnpy](https://github.com/vnpy/vnpy)最核心代码的逐行解析，应该可以帮助其他人更快的了解vnpy整体架构。
+
 # znpy
 >二次开发于[vnpy](https://github.com/vnpy)
 
